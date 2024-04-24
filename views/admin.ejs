@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dana-Admin</title>
+    <style>
+        h1,h2{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .payment-received-Button{
+            height: 50px;
+            width: 100%;
+            display: flex;
+            text-align: center;
+            & div{
+                height: 40px;
+                width: 150px;
+                font-size: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 10px;
+            }
+        }
+        .delete-btn{
+            height: 40px;
+            width: 100px;
+            margin: 5px;
+            border-radius: 10px;
+            outline: none;
+            border: none;
+            background-color: rgb(255, 42, 42);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .delete-btn:hover{
+                background-color: rgb(203, 3, 3);
+            }
+        .is-received-done-button{
+            height: 40px;
+            width: 150px;
+            margin: 5px;
+            border-radius: 7px;
+            outline: none;
+            border: none;
+            background-color: rgb(88, 251, 70);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .is-received-done-button:hover{
+            background-color: rgb(22, 224, 0);
+        }
+        .is-received-notdone-button{
+            height: 40px;
+            width: 150px;
+            margin: 5px;
+            border-radius: 7px;
+            outline: none;
+            border: none;
+            background-color: rgb(55, 134, 204);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <a href="/">
+        Back to Home
+    </a>
+    <h1>
+        Donate People
+    </h1>
+    <h2>
+        Total Amount : <%= totalAmount %>
+    </h2>
+    <h2>
+        Total Donaters : <span id="total-donater"><%= users.length %></span>
+    </h2>
+    <% for(user of users) { %>
+        <div  id="<%= user._id %>">
+            Name : <%= user.name %> <br>
+            Phone : <%= user.phone %> <br>
+            Paying Amount : <%= user.amount %>
+            <br><br>
+            <div class="payment-received-Button">
+                <button class="delete-btn" onclick="deleteFun('<%= user._id %>')">Delete</button>
+                <% if(user.admin_view === false){ %>
+                    <button class="is-received-done-button" onclick="recevedFun(true,'<%= user._id %>')">Received</button>
+                    <button class="is-received-notdone-button" onclick="recevedFun(false,'<%= user._id %>')">Not Received</button>
+                <% }else{ %>
+                    <% if(user.received === true){ %>
+                        <div style="background-color: rgb(18, 174, 18); color: white;">
+                            Received Payment
+                        </div>
+                    <% }else{ %>
+                        <div style="background-color: red;color: white;">
+                            Payment not Received
+                        </div>
+                    <% } %>
+                <%}%>
+                
+            </div>
+        
+            <hr>
+        </div>
+        <br>
+    <% } %>
+
+    <!-- Javascript file -->
+    <script>
+        async function recevedFun(st,id){
+            // console.log("id = ",id,st);
+            if(st === true){
+                const url = `/admin/payment-received`;
+                const res = await fetch(url,{
+                    method : "POST",
+                    headers : {'Content-Type' : 'application/json'},
+                    body : JSON.stringify({
+                        id
+                    })
+                })
+                const result = await res.json();
+                if(result.status === true){
+                    window.location.href = '/admin';
+                }
+            }else{
+                const url = `/admin/payment-not-received`;
+                const res = await fetch(url,{
+                    method : "POST",
+                    headers : {'Content-Type' : 'application/json'},
+                    body : JSON.stringify({
+                        id
+                    })
+                })
+                const result = await res.json();
+                if(result.status === true){
+                    window.location.href = '/admin';
+                }
+            }
+        }
+
+        // Delete any data
+        async function deleteFun(id){
+            // console.log("hello")
+            const confirm_delete = confirm("Are you want to delete this payment ? ");
+            // console.log(confirm_delete);
+            if(confirm_delete === true){
+                const url = `/admin/payment-delete`;
+                const res = await fetch(url,{
+                    method : "POST",
+                    headers : {'Content-Type' : 'application/json'},
+                    body : JSON.stringify({
+                        id
+                    })
+                })
+                const result = await res.json();
+                if(result.status === true){
+                    window.location.href = '/admin';
+                }
+            }else{
+                return;
+            }
+        }
+    </script>
+</body>
+</html>
