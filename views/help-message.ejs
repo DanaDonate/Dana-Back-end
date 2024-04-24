@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help message</title>
+    <style>
+        h1{
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <a href="/">Back to home</a> <br><br>
+    <h1>All Help Message</h1>
+    <% for(i of helpMessage){ %>
+        <div>
+            Name : <%= i.name %> <br>
+            Email : <%= i.email %> <br>
+            Message : <%= i.message %> <br>
+        </div> <br><br>
+    <% } %>
+</body>
+</html>
